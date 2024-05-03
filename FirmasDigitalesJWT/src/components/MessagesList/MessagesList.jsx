@@ -1,25 +1,37 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './MessagesList.css';
+
 
 function MessagesList() {
     const [songs, setSongs] = useState([]);
+    const navigate = useNavigate(); // Obtiene la función navigate
+
+    const getCanciones = async() => {
+        try{
+            const response = await fetch('http://localhost:5000/canciones');
+            const data = await response.json();
+            console.log(data);
+            setSongs(data);
+        }
+        catch(error){
+            console.log(error);
+        }
+        
+        
+      }
 
     useEffect(() => {
-        // Inicializa la lista de canciones
-        const songList = [
-            "Canción 1",
-            "Canción 2",
-            "Canción 3",
-            "Canción 4",
-            "Canción 5",
-            "Canción 6",
-            "Canción 7",
-            "Canción 8",
-            "Canción 9",
-            "Canción 10"
-        ];
-        setSongs(songList);
+        getCanciones();
+        
     }, []);
+
+    // Función para manejar la navegación al hacer clic en una canción
+    const handleSongClick = (song) => {
+        console.log(song);
+        const songJson = JSON.stringify(song);
+        navigate(`/messages/${encodeURIComponent(songJson)}`);
+    }
 
     return (
         <div className='AppBg'>
@@ -27,7 +39,9 @@ function MessagesList() {
             <div className="song-list-container"> {/* Nuevo contenedor para las canciones */}
                 <ul className="song-list">
                     {songs.map((song, index) => (
-                        <li key={index}>{song}</li>
+                        <li key={index} onClick={() => handleSongClick(song)}>
+                            {song.nombre}
+                        </li>
                     ))}
                 </ul>
             </div>

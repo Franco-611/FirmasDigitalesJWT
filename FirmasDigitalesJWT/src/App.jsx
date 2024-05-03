@@ -2,13 +2,51 @@
 import { Button, Divider, Form, Input, message } from 'antd';
 import './App.css'
 import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
 
-
-// eslint-disable-next-line no-unused-vars
 
 function App() {
 
+  const [users, setUsers] = useState([]);
+
   const navigate = useNavigate();
+
+  const getUsers = async() => {
+    try{
+        const response = await fetch('http://localhost:5000/usuarios');
+        const data = await response.json();
+        console.log(data);
+        setUsers(data);
+    }
+    catch(error){
+        console.log(error);
+    }
+    
+    
+  }
+
+  const verificarUser = async (values) => {
+    try {
+      await getUsers(); // Espera a que getUsers() termine de obtener los datos
+  
+      // Verifica si los valores existen en los datos obtenidos
+      const userExists = users.some(user => user.usuario === values.username && user.contrasena === values.password);
+  
+      if (userExists) {
+        sessionStorage.setItem('username', values.username);
+        navigate('/messages');
+        message.success('Login successful, keys updated.');
+      } else {
+        // El usuario no existe
+        message.error('Username not found.');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
+  
+  
 
 
   const onFinishRegister = async (values) => {
@@ -27,10 +65,8 @@ function App() {
   
   const onFinishLogin = async (values) => {
     try {
-      sessionStorage.setItem('username', values.username);
-      //await LogIn(values.username,values.password);
-      navigate('/messages');
-      message.success('Login successful, keys updated.');
+
+      verificarUser(values);
 
     } catch (error) {
       message.error('Login failed. Could not update keys.');
