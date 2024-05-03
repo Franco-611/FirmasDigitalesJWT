@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MessagesList.css';
 
-
 function MessagesList() {
     const [songs, setSongs] = useState([]);
     const navigate = useNavigate(); // Obtiene la función navigate

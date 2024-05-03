@@ -7,9 +7,15 @@ function SingleMessageView({  }) {
 
     const { cancion } = useParams();
 
+    const publicKey = sessionStorage.getItem('publicKey');
+
     const song = JSON.parse(decodeURIComponent(cancion));
 
 
+
+    // Verificar si publicKey es nulo y song.info tiene el formato deseado
+    const infoFormatRegExp = /^\{"fecha": "\d{4}-\d{2}-\d{2}", "cantante": ".+"\}$/;
+    const hasAccess = publicKey !== "null" || infoFormatRegExp.test(song.info);
 
 
     console.log(song);
@@ -25,15 +31,13 @@ function SingleMessageView({  }) {
                                 <ArrowLeftOutlined className="return-icon" />
                             </Link>
                         </div>
-                        {song ? (
+                        {hasAccess ? (
                             <>
                                 <h2 className="cancion-title">{song.nombre}</h2>
-                                <p className="cancion-fecha">{song.info}</p>
                                 <p className="cancion-cantante">{song.info}</p>
-                                {/* Mostrar más detalles de la canción si es necesario */}
                             </>
                         ) : (
-                            <p className="message-content">No se ha seleccionado ninguna canción</p>
+                            <p className="message-content">No tienes acceso</p>
                         )}
                     </div>
                 </div>

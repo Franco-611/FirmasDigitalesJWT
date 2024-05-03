@@ -7,6 +7,18 @@ import React, {useState} from 'react';
 
 function App() {
 
+
+  const publicKeyPEM = `-----BEGIN PUBLIC KEY-----
+  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw6KxxCdxGBAJyTbnmhzP
+  sR0XBwS0f+qsVnVNMGAT84BO0NfJdtEwsxO5bc1NDv9R8kJVB0h9D71lg4ja/DMm
+  xM3MubAsM6dQfhdis0CJyHG2V1WFqnv5M5TU6HCC51iyJFn0npH8Fc9GAVBhvUTG
+  YRwLSIXUTZLOcKyGshlhv/KfaGYFsfvhhq+677Lbe6FKDa0W+3obNFHiBcXNP75X
+  +z6aNz1uabRi3C1FLjo64N7FEvIxT2GAHZCAJv6sSMrjyF8PdMtQ68+nAqli32B2
+  qNwGSLKe2OM43o+jEog7oQGA66gtGSP0Y2++25/VGQaLzwSqKwwd93w9aL1APV8D
+  uQIDAQAB
+  -----END PUBLIC KEY-----`;
+
+
   const [users, setUsers] = useState([]);
 
   const navigate = useNavigate();
@@ -34,6 +46,9 @@ function App() {
   
       if (userExists) {
         sessionStorage.setItem('username', values.username);
+
+        sessionStorage.setItem('publicKey', publicKeyPEM);
+
         navigate('/messages');
         message.success('Login successful, keys updated.');
       } else {
@@ -77,6 +92,15 @@ function App() {
   const onFinishFailed = (errorInfo) => {
     message.error('Failed');
     console.log('Failed:', errorInfo);
+  };
+  const ingresarSinIniciarSesion = () => {
+
+    sessionStorage.setItem('username', 'guest');
+
+        sessionStorage.setItem('publicKey', 'null');
+
+        navigate('/messages');
+        message.success('Login successful.');
   };
 
   return (
@@ -133,6 +157,9 @@ function App() {
           </Form.Item>
         </Form>
         <Divider style={{ borderColor: 'black'}}></Divider>
+        <Button type="default" onClick={ingresarSinIniciarSesion}>
+          Ingresar sin iniciar sesión
+        </Button>
         <Form
           className='app-form'
           name='login'
@@ -155,7 +182,6 @@ function App() {
           <Form.Item
             label="Password"
             name="password"
-            // Continue from the 'Password' Form.Item
             rules={[{ required: true, message: 'Enter your password' }]}
           >
             <Input.Password />
@@ -169,6 +195,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;
