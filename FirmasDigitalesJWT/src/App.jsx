@@ -8,17 +8,6 @@ import React, {useState} from 'react';
 function App() {
 
 
-  const publicKeyPEM = `-----BEGIN PUBLIC KEY-----
-  MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw6KxxCdxGBAJyTbnmhzP
-  sR0XBwS0f+qsVnVNMGAT84BO0NfJdtEwsxO5bc1NDv9R8kJVB0h9D71lg4ja/DMm
-  xM3MubAsM6dQfhdis0CJyHG2V1WFqnv5M5TU6HCC51iyJFn0npH8Fc9GAVBhvUTG
-  YRwLSIXUTZLOcKyGshlhv/KfaGYFsfvhhq+677Lbe6FKDa0W+3obNFHiBcXNP75X
-  +z6aNz1uabRi3C1FLjo64N7FEvIxT2GAHZCAJv6sSMrjyF8PdMtQ68+nAqli32B2
-  qNwGSLKe2OM43o+jEog7oQGA66gtGSP0Y2++25/VGQaLzwSqKwwd93w9aL1APV8D
-  uQIDAQAB
-  -----END PUBLIC KEY-----`;
-
-
   const [users, setUsers] = useState([]);
 
   const navigate = useNavigate();
@@ -37,6 +26,20 @@ function App() {
     
   }
 
+  const getKey = async() => {
+    try{
+        const response = await fetch('http://localhost:5000/publicKey');
+        const data = await response.json();
+        console.log(data);
+        sessionStorage.setItem('publicKey', data.publicKey);
+    }
+    catch(error){
+        console.log(error);
+    }
+    
+    
+  }
+
   const verificarUser = async (values) => {
     try {
       await getUsers(); // Espera a que getUsers() termine de obtener los datos
@@ -47,7 +50,7 @@ function App() {
       if (userExists) {
         sessionStorage.setItem('username', values.username);
 
-        sessionStorage.setItem('publicKey', publicKeyPEM);
+        await getKey();
 
         navigate('/messages');
         message.success('Login successful, keys updated.');
