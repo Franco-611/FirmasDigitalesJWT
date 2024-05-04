@@ -40,6 +40,22 @@ function App() {
     
   }
 
+  async function insertar(values) {
+    const response = await fetch('http://localhost:5000/insertar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            usuario: values.username,
+            contra: values.password,
+        }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+}
+
   const verificarUser = async (values) => {
     try {
       await getUsers(); // Espera a que getUsers() termine de obtener los datos
@@ -71,9 +87,13 @@ function App() {
     try {
       // Guardar el username en sessionStorage
       sessionStorage.setItem('username', values.username);
-      message.success('Registration successful');
+
+      await insertar(values);
+      
+      await getKey();
+
       navigate('/messages');
-      //await Register(values.username, values.password);
+      message.success('Login successful, keys updated.');
 
     } catch (error) {
       message.error('Registration failed');
@@ -96,6 +116,7 @@ function App() {
     message.error('Failed');
     console.log('Failed:', errorInfo);
   };
+
   const ingresarSinIniciarSesion = () => {
 
     sessionStorage.setItem('username', 'guest');
